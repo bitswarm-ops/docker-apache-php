@@ -1,0 +1,13 @@
+#!/bin/bash
+chown -R www-data:www-data /app /var/lib/apache2
+
+source /etc/apache2/envvars
+
+if [ ! -e /var/log/php5-fpm.log ]; then
+  touch /var/log/php5-fpm.log
+  chown www-data:www-data /var/log/php5-fpm.log
+fi
+
+tail -F /var/log/php5-fpm.log &
+
+exec /usr/sbin/php5-fpm

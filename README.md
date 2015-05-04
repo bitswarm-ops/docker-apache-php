@@ -1,4 +1,4 @@
-tutum-docker-php
+bitswarm/apache-php
 ================
 
 Base docker image to run PHP applications on Apache
@@ -7,9 +7,9 @@ Base docker image to run PHP applications on Apache
 Building the base image
 -----------------------
 
-To create the base image `tutum/apache-php`, execute the following command on the tutum-docker-php folder:
+To create the base image `bitswarm/apache-php`, execute the following command on the bitswarm-docker-php folder:
 
-    docker build -t tutum/apache-php .
+    docker build -t bitswarm/apache-php .
 
 
 Running your Apache+PHP docker image
@@ -17,7 +17,7 @@ Running your Apache+PHP docker image
 
 Start your image binding the external ports 80 in all interfaces to your container:
 
-    docker run -d -p 80:80 tutum/apache-php
+    docker run -d -p 80:80 bitswarm/apache-php
 
 Test your deployment:
 
@@ -32,7 +32,7 @@ Loading your custom PHP application
 This image can be used as a base image for your PHP application. Create a new `Dockerfile` in your 
 PHP application folder with the following contents:
 
-    FROM tutum/apache-php
+    FROM bitswarm/apache-php
 
 After that, build the new `Dockerfile`:
 
@@ -54,7 +54,7 @@ Loading your custom PHP application with composer requirements
 
 Create a Dockerfile like the following:
 
-    FROM tutum/apache-php
+    FROM bitswarm/apache-php
     RUN apt-get update && apt-get install -yq git && rm -rf /var/lib/apt/lists/*
     RUN rm -fr /app
     ADD . /app

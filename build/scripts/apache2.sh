@@ -11,7 +11,7 @@ cp /build/config/apt/trusty-multiverse.list /etc/apt/sources.list.d/ && apt-get 
 
 $minimal_apt_get_install libapache2-mod-fastcgi
 
-a2enmod actions fastcgi alias
+a2enmod actions fastcgi alias rewrite
 
 # we want www-data to have uid of 1000 so it would retain write access to /var/www should this be
 # exposed as a "volume"

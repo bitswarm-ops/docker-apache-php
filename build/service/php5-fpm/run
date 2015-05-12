@@ -3,11 +3,35 @@ chown -R www-data:www-data /app /var/lib/apache2
 
 source /etc/apache2/envvars
 
-if [ ! -e /var/log/php5-fpm.log ]; then
-  touch /var/log/php5-fpm.log
-  chown www-data:www-data /var/log/php5-fpm.log
-fi
+# Function to update the fpm configuration to make the service environment variables available
+function setEnvironmentVariable() {
 
-tail -F /var/log/php5-fpm.log &
+    if [ -z "$2" ]; then
+        echo "## Environment variable '$1' not set."
+        return
+    fi
 
-exec /usr/sbin/php5-fpm
+    # Check whether variable already exists
+    if grep -q $1 /etc/php5/fpm/pool.d/www.conf; then
+        # Reset variable
+        sed -i "s/^env\[$1.*/env[$1] = $2/g" /etc/php5/fpm/pool.d/www.conf
+    else
+        # Add variable
+        echo "env[$1] = $2" >> /etc/php5/fpm/pool.d/www.conf
+        echo "## Environment variable $1 added ($2)"
+    fi
+}
+
+echo "## Adding environment variables to /etc/php5/fpm/pool.d/www.conf"
+
+# Grep for variables that look like docker set them (_PORT_)
+for _curVar in `env | grep _PORT_ | awk -F = '{print $1}'`;do
+    # awk has split them by the equals sign
+    # Pass the name and value to our function
+    setEnvironmentVariable ${_curVar} ${!_curVar}
+done
+
+# Log something to the supervisord log so we know this script as run
+echo "## Done adding environment variables to /etc/php5/fpm/pool.d/www.conf"
+
+exec /usr/sbin/php5-fpm --nodaemonize

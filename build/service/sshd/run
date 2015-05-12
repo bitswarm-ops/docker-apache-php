@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+
+if [ ! -e /var/log/auth ]; then
+  touch /var/log/auth
+fi
+
+tail -F /var/log/auth &
+
+exec /usr/sbin/sshd -D
